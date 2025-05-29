@@ -7,9 +7,9 @@ function Navigation() {
     <nav className="navigation">
       <h1 className="nav-title">Todo App</h1>
       <ul className="nav-links">
-        <Link to={SOURCE_PATH + "/list"}>Todo List</Link>
-        <Link to={SOURCE_PATH + "/table"}>Todo Table</Link>
-        <Link to={SOURCE_PATH + "/kanban"}>Todo Kanban</Link>
+        <Link to={SOURCE_PATH + "/list"}>List View</Link>
+        <Link to={SOURCE_PATH + "/table"}>Table View</Link>
+        <Link to={SOURCE_PATH + "/kanban"}>Kanban View</Link>
       </ul>
     </nav>
   );
