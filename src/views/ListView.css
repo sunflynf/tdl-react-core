@@ -1,0 +1,92 @@
+.list-view {
+  padding: 20px 0;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.todo-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.todo-content {
+  flex: 1;
+}
+
+.todo-content h3 {
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.description {
+  margin-bottom: 12px;
+  color: #7f8c8d;
+}
+
+.todo-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #95a5a6;
+}
+
+.todo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.status-toggle {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  transition: background-color 0.2s;
+  width: 80px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.status-toggle.status-to-do {
+  background-color: var(--todo-color);
+}
+
+.status-toggle.status-doing {
+  background-color: var(--doing-color);
+}
+
+.status-toggle.status-done {
+  background-color: var(--done-color);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--dark-gray);
+  background-color: white;
+  border-radius: 8px;
+}
