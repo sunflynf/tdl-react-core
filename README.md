@@ -68,3 +68,7 @@ npm start
 - [x] Confirm archive dialog
 - [ ] Toast notification (Provider + animation)
 - [ ] Fetch data with REST Apis
+
+## References
+
+- [Deploy Vite project in Github Pages](https://vite.dev/guide/static-deploy#github-pages)
