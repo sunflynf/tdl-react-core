@@ -1,15 +1,15 @@
-.card-view {
+.kanban-view {
   padding: 20px 0;
 }
 
-.card-header {
+.kanban-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.card-container {
+.kanban-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;

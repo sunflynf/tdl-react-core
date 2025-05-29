@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTodoContext } from "../contexts/TodoContext";
 import TodoForm from "../components/TodoForm";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { formatDate } from "../utils/format";
 
 import "./ListView.css";
 
@@ -32,11 +33,6 @@ export default function ListView() {
   const confirmDelete = () => {
     deleteTodo(currentTodo.id);
     setShowConfirmDialog(false);
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString();
   };
 
   return (

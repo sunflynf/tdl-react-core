@@ -2,7 +2,7 @@ import { useState } from "react";
 import Navigation from "./components/Navigation";
 import ListView from "./views/ListView";
 import TableView from "./views/TableView";
-import CardView from "./views/CardView";
+import KanbanView from "./views/KanbanView";
 import { TodoProvider } from "./contexts/TodoContext";
 import "./App.css";
 
@@ -22,7 +22,7 @@ function App() {
       case ROUTES.TABLE:
         return <TableView />;
       case ROUTES.CARD:
-        return <CardView />;
+        return <KanbanView />;
       default:
         return <ListView />;
     }

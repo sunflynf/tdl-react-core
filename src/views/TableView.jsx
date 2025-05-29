@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTodoContext } from "../contexts/TodoContext";
 import ConfirmDialog from "../components/ConfirmDialog";
+import { formatDateForTable as formatDate } from "../utils/format";
 import "./TableView.css";
 
 function TableView() {
@@ -69,12 +70,6 @@ function TableView() {
     deleteTodo(todoToDelete.id);
     setShowConfirmDialog(false);
     setTodoToDelete(null);
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    // Convert to YYYY-MM-DD format for input
-    return dateString.split("T")[0];
   };
 
   return (

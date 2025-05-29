@@ -2,9 +2,11 @@ import { useState, useRef } from "react";
 import { useTodoContext } from "../contexts/TodoContext";
 import TodoForm from "../components/TodoForm";
 import ConfirmDialog from "../components/ConfirmDialog";
-import "./CardView.css";
+import { formatDate } from "../utils/format";
 
-function CardView() {
+import "./KanbanView.css";
+
+function KanbanView() {
   const { todos, changeStatus, deleteTodo } = useTodoContext();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -65,21 +67,16 @@ function CardView() {
     setShowConfirmDialog(false);
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString();
-  };
-
   return (
-    <div className="card-view">
-      <div className="card-header">
-        <h2>Todo Cards</h2>
+    <div className="kanban-view">
+      <div className="kanban-header">
+        <h2>Todo Kanban</h2>
         <button className="add-button" onClick={() => setShowAddForm(true)}>
           Add Todo
         </button>
       </div>
 
-      <div className="card-container">
+      <div className="kanban-container">
         {Object.keys(todosByStatus).map((status) => (
           <div
             key={status}
@@ -170,4 +167,4 @@ function CardView() {
   );
 }
 
-export default CardView;
+export default KanbanView;

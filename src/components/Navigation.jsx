@@ -22,7 +22,7 @@ function Navigation({ currentRoute, setCurrentRoute, routes }) {
       route: routes.TABLE,
     },
     {
-      title: "Card View",
+      title: "Kanban View",
       route: routes.CARD,
     },
   ];
