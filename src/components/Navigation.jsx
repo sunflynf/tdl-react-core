@@ -1,44 +1,15 @@
+import { Link } from "../routes/Link";
+import { SOURCE_PATH } from "../constant/path";
 import "./Navigation.css";
 
-const NavigationItem = ({ isCurrentRoute = false, onClick, title }) => {
-  return (
-    <li
-      className={`nav-item ${isCurrentRoute ? "active" : ""}`}
-      onClick={onClick}
-    >
-      {title}
-    </li>
-  );
-};
-
-function Navigation({ currentRoute, setCurrentRoute, routes }) {
-  const items = [
-    {
-      title: "List View",
-      route: routes.LIST,
-    },
-    {
-      title: "Table View",
-      route: routes.TABLE,
-    },
-    {
-      title: "Kanban View",
-      route: routes.CARD,
-    },
-  ];
-
+function Navigation() {
   return (
     <nav className="navigation">
       <h1 className="nav-title">Todo App</h1>
       <ul className="nav-links">
-        {items.map((item) => (
-          <NavigationItem
-            key={item.title}
-            isCurrentRoute={currentRoute === item.route}
-            onClick={() => setCurrentRoute(item.route)}
-            title={item.title}
-          />
-        ))}
+        <Link to={SOURCE_PATH + "/list"}>Todo List</Link>
+        <Link to={SOURCE_PATH + "/table"}>Todo Table</Link>
+        <Link to={SOURCE_PATH + "/kanban"}>Todo Kanban</Link>
       </ul>
     </nav>
   );
