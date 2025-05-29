@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v3.9.1
 
       - name: Install dependencies
-        run: npm install --package-lock-only --ignore-scripts
+        run: npm install
 
       - name: Build project
         run: npm run build
