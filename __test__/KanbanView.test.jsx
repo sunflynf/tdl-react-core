@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TodoProvider } from '../src/contexts/TodoContext';
-import ListView from '../src/pages/ListView';
+import KanbanView from '../src/pages/KanbanView';
 
 // Mock the TodoForm and ConfirmDialog components
 jest.mock('../src/components/Forms/TodoForm', () => {
@@ -26,42 +26,39 @@ jest.mock('../src/components/Dialogs/ConfirmDialog', () => {
   };
 });
 
-describe('ListView', () => {
-  test('renders empty state when no todos', () => {
+describe('KanbanView', () => {
+  test('renders all three status columns', () => {
     render(
       <TodoProvider>
-        <ListView />
+        <KanbanView />
       </TodoProvider>
     );
 
-    expect(screen.getByText('No todos yet. Add one to get started!')).toBeInTheDocument();
-    expect(screen.getByText('Add Todo')).toBeInTheDocument();
+    expect(screen.getByText('To do')).toBeInTheDocument();
+    expect(screen.getByText('Doing')).toBeInTheDocument();
+    expect(screen.getByText('Done')).toBeInTheDocument();
+  });
+
+  test('shows empty state for each column when no todos', () => {
+    render(
+      <TodoProvider>
+        <KanbanView />
+      </TodoProvider>
+    );
+
+    // There should be three "No tasks" messages (one for each column)
+    const emptyStates = screen.getAllByText('No tasks');
+    expect(emptyStates.length).toBe(3);
   });
 
   test('shows add form when add button is clicked', () => {
     render(
       <TodoProvider>
-        <ListView />
+        <KanbanView />
       </TodoProvider>
     );
 
     fireEvent.click(screen.getByText('Add Todo'));
     expect(screen.getByTestId('todo-form')).toBeInTheDocument();
-  });
-
-  test('closes add form when save is clicked', () => {
-    render(
-      <TodoProvider>
-        <ListView />
-      </TodoProvider>
-    );
-
-    // Open form
-    fireEvent.click(screen.getByText('Add Todo'));
-    expect(screen.getByTestId('todo-form')).toBeInTheDocument();
-
-    // Save and close form
-    fireEvent.click(screen.getByText('Save'));
-    expect(screen.queryByTestId('todo-form')).not.toBeInTheDocument();
   });
 });

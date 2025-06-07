@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import TableView from "../src/views/TableView";
-import { TodoProvider } from "../src/contexts/TodoContext";
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { TodoProvider } from '../src/contexts/TodoContext';
+import TableView from '../src/pages/TableView';
 
-jest.mock("../src/components/ConfirmDialog", () => {
+jest.mock('../src/components/Dialogs/ConfirmDialog', () => {
   return function MockConfirmDialog({ onConfirm, onCancel }) {
     return (
       <div data-testid="confirm-dialog">
@@ -15,8 +15,8 @@ jest.mock("../src/components/ConfirmDialog", () => {
   };
 });
 
-describe("TableView", () => {
-  test("shows add row when add button is clicked", async () => {
+describe('TableView', () => {
+  test('shows add row when add button is clicked', async () => {
     render(
       <TodoProvider>
         <TableView />
@@ -24,20 +24,20 @@ describe("TableView", () => {
     );
 
     // Initially there's an add button
-    const addButton = screen.getByText("Add Todo");
+    const addButton = screen.getByText('Add Todo');
     expect(addButton).toBeInTheDocument();
 
     // Click on add button
     await userEvent.click(addButton);
 
     // Add form should appear with save and cancel buttons
-    expect(screen.getByPlaceholderText("Title")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Description")).toBeInTheDocument();
-    expect(screen.getByText("Save")).toBeInTheDocument();
-    expect(screen.getByText("Cancel")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Title')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Description')).toBeInTheDocument();
+    expect(screen.getByText('Save')).toBeInTheDocument();
+    expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
-  test("cancels adding when cancel button is clicked", async () => {
+  test('cancels adding when cancel button is clicked', async () => {
     render(
       <TodoProvider>
         <TableView />
@@ -45,13 +45,13 @@ describe("TableView", () => {
     );
 
     // Click add button
-    await userEvent.click(screen.getByText("Add Todo"));
+    await userEvent.click(screen.getByText('Add Todo'));
 
     // Cancel adding
-    await userEvent.click(screen.getByText("Cancel"));
+    await userEvent.click(screen.getByText('Cancel'));
 
     // Form should disappear
-    expect(screen.queryByPlaceholderText("Title")).not.toBeInTheDocument();
-    expect(screen.getByText("Add Todo")).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Title')).not.toBeInTheDocument();
+    expect(screen.getByText('Add Todo')).toBeInTheDocument();
   });
 });
