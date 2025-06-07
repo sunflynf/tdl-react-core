@@ -1,23 +1,23 @@
-import { useState } from "react";
-import { useTodoContext } from "../contexts/TodoContext";
-import ConfirmDialog from "../components/ConfirmDialog";
-import { formatDateForTable as formatDate } from "../utils/format";
-import "./TableView.css";
+import { use, useState } from 'react';
+import { TodoContext } from '../../contexts/TodoContext';
+import ConfirmDialog from '../../components/Dialogs/ConfirmDialog';
+import { formatDateForTable as formatDate } from '../../utils/format';
+import './TableView.css';
 
 function TableView() {
-  const { todos, addTodo, updateTodo, deleteTodo } = useTodoContext();
+  const { todos, addTodo, updateTodo, deleteTodo } = use(TodoContext);
   const [isAddingTodo, setIsAddingTodo] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState(null);
   const [editingTodo, setEditingTodo] = useState(null);
   const [newTodo, setNewTodo] = useState({
-    title: "",
-    description: "",
-    dateEnd: "",
-    status: "To do",
+    title: '',
+    description: '',
+    dateEnd: '',
+    status: 'To do',
   });
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const handleInputChange = (e, id = null) => {
     const { name, value } = e.target;
@@ -40,10 +40,10 @@ function TableView() {
   const handleAddSave = () => {
     addTodo(newTodo);
     setNewTodo({
-      title: "",
-      description: "",
-      dateEnd: "",
-      status: "To do",
+      title: '',
+      description: '',
+      dateEnd: '',
+      status: 'To do',
     });
     setIsAddingTodo(false);
   };
@@ -88,12 +88,7 @@ function TableView() {
         </thead>
         <tbody>
           {todos.map((todo) => (
-            <tr
-              key={todo.id}
-              className={`status-${todo.status
-                .toLowerCase()
-                .replace(" ", "-")}`}
-            >
+            <tr key={todo.id} className={`status-${todo.status.toLowerCase().replace(' ', '-')}`}>
               {editingTodo && editingTodo.id === todo.id ? (
                 <>
                   <td>
@@ -122,11 +117,7 @@ function TableView() {
                     />
                   </td>
                   <td>
-                    <select
-                      name="status"
-                      value={editingTodo.status}
-                      onChange={(e) => handleInputChange(e, todo.id)}
-                    >
+                    <select name="status" value={editingTodo.status} onChange={(e) => handleInputChange(e, todo.id)}>
                       <option value="To do">To do</option>
                       <option value="Doing">Doing</option>
                       <option value="Done">Done</option>
@@ -145,23 +136,13 @@ function TableView() {
                 <>
                   <td>{todo.title}</td>
                   <td className="description-cell">{todo.description}</td>
-                  <td>
-                    {todo.dateEnd
-                      ? new Date(todo.dateEnd).toLocaleDateString()
-                      : "N/A"}
-                  </td>
+                  <td>{todo.dateEnd ? new Date(todo.dateEnd).toLocaleDateString() : 'N/A'}</td>
                   <td>{todo.status}</td>
                   <td className="action-cell">
-                    <button
-                      className="edit-button"
-                      onClick={() => startEdit(todo)}
-                    >
+                    <button className="edit-button" onClick={() => startEdit(todo)}>
                       Edit
                     </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => handleDelete(todo)}
-                    >
+                    <button className="delete-button" onClick={() => handleDelete(todo)}>
                       Delete
                     </button>
                   </td>
@@ -190,19 +171,10 @@ function TableView() {
                 />
               </td>
               <td>
-                <input
-                  type="date"
-                  name="dateEnd"
-                  value={newTodo.dateEnd}
-                  onChange={handleInputChange}
-                />
+                <input type="date" name="dateEnd" value={newTodo.dateEnd} onChange={handleInputChange} />
               </td>
               <td>
-                <select
-                  name="status"
-                  value={newTodo.status}
-                  onChange={handleInputChange}
-                >
+                <select name="status" value={newTodo.status} onChange={handleInputChange}>
                   <option value="To do">To do</option>
                   <option value="Doing">Doing</option>
                   <option value="Done">Done</option>
@@ -212,10 +184,7 @@ function TableView() {
                 <button className="save-button" onClick={handleAddSave}>
                   Save
                 </button>
-                <button
-                  className="cancel-button"
-                  onClick={() => setIsAddingTodo(false)}
-                >
+                <button className="cancel-button" onClick={() => setIsAddingTodo(false)}>
                   Cancel
                 </button>
               </td>

@@ -1,13 +1,13 @@
-import { useState, useRef } from "react";
-import { useTodoContext } from "../contexts/TodoContext";
-import TodoForm from "../components/TodoForm";
-import ConfirmDialog from "../components/ConfirmDialog";
-import { formatDate } from "../utils/format";
+import { use, useState, useRef } from 'react';
+import { TodoContext } from '../../contexts/TodoContext';
+import TodoForm from '../../components/Forms/TodoForm';
+import ConfirmDialog from '../../components/Dialogs/ConfirmDialog';
+import { formatDate } from '../../utils/format';
 
-import "./KanbanView.css";
+import './KanbanView.css';
 
 function KanbanView() {
-  const { todos, changeStatus, deleteTodo } = useTodoContext();
+  const { todos, changeStatus, deleteTodo } = use(TodoContext);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -19,15 +19,15 @@ function KanbanView() {
 
   // Filter todos by status
   const todosByStatus = {
-    "To do": todos.filter((todo) => todo.status === "To do"),
-    Doing: todos.filter((todo) => todo.status === "Doing"),
-    Done: todos.filter((todo) => todo.status === "Done"),
+    'To do': todos.filter((todo) => todo.status === 'To do'),
+    Doing: todos.filter((todo) => todo.status === 'Doing'),
+    Done: todos.filter((todo) => todo.status === 'Done'),
   };
 
   const handleDragStart = (e, todo) => {
     dragItem.current = todo;
     dragNode.current = e.target;
-    dragNode.current.addEventListener("dragend", handleDragEnd);
+    dragNode.current.addEventListener('dragend', handleDragEnd);
 
     setTimeout(() => {
       setDraggedTodo(todo);
@@ -35,7 +35,7 @@ function KanbanView() {
   };
 
   const handleDragEnd = () => {
-    dragNode.current.removeEventListener("dragend", handleDragEnd);
+    dragNode.current.removeEventListener('dragend', handleDragEnd);
     dragItem.current = null;
     dragNode.current = null;
     setDraggedTodo(null);
@@ -80,9 +80,7 @@ function KanbanView() {
         {Object.keys(todosByStatus).map((status) => (
           <div
             key={status}
-            className={`status-column status-${status
-              .toLowerCase()
-              .replace(" ", "-")}`}
+            className={`status-column status-${status.toLowerCase().replace(' ', '-')}`}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, status)}
           >
@@ -95,36 +93,20 @@ function KanbanView() {
                 todosByStatus[status].map((todo) => (
                   <div
                     key={todo.id}
-                    className={`todo-card ${
-                      draggedTodo && draggedTodo.id === todo.id
-                        ? "dragging"
-                        : ""
-                    }`}
+                    className={`todo-card ${draggedTodo && draggedTodo.id === todo.id ? 'dragging' : ''}`}
                     draggable
                     onDragStart={(e) => handleDragStart(e, todo)}
                   >
                     <h4 className="card-title">{todo.title}</h4>
                     <p className="card-description">{todo.description}</p>
-                    <div className="card-date">
-                      Due: {formatDate(todo.dateEnd)}
-                    </div>
-                    {todo.dateFinish && (
-                      <div className="card-date">
-                        Finish: {formatDate(todo.dateFinish)}
-                      </div>
-                    )}
+                    <div className="card-date">Due: {formatDate(todo.dateEnd)}</div>
+                    {todo.dateFinish && <div className="card-date">Finish: {formatDate(todo.dateFinish)}</div>}
 
                     <div className="card-actions">
-                      <button
-                        className="edit-button"
-                        onClick={() => handleEdit(todo)}
-                      >
+                      <button className="edit-button" onClick={() => handleEdit(todo)}>
                         Edit
                       </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(todo)}
-                      >
+                      <button className="delete-button" onClick={() => handleDelete(todo)}>
                         Delete
                       </button>
                     </div>
@@ -138,11 +120,7 @@ function KanbanView() {
 
       {/* Add Todo Dialog */}
       {showAddForm && (
-        <TodoForm
-          onClose={() => setShowAddForm(false)}
-          onSave={() => setShowAddForm(false)}
-          mode="add"
-        />
+        <TodoForm onClose={() => setShowAddForm(false)} onSave={() => setShowAddForm(false)} mode="add" />
       )}
 
       {/* Edit Todo Dialog */}
