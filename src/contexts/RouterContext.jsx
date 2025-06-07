@@ -1,32 +1,37 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Outlet } from "../routes/Outlet";
+import { createContext, useEffect, useState } from 'react';
+import Navigation from '../components/Navigation';
+import { Outlet } from '../routes/Outlet';
 
-export const RouterContext = createContext({
+const RouterContext = createContext({
   routes: [],
-  currentPath: "",
+  currentPath: '',
   navigate: () => {},
 });
 
-export const RouterProvider = ({ children, routes = [] }) => {
+const RouterProvider = ({ routes = [] }) => {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
     const handler = () => setCurrentPath(window.location.pathname);
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    window.addEventListener('popstate', handler);
+    return () => window.removeEventListener('popstate', handler);
   }, []);
 
   const navigate = (to) => {
-    window.history.pushState({}, "", to);
+    window.history.pushState({}, '', to);
     setCurrentPath(to);
   };
 
   return (
     <RouterContext.Provider value={{ routes, currentPath, navigate }}>
-      {children}
-      <Outlet />
+      <div className="app-container">
+        <Navigation />
+        <main className="content">
+          <Outlet />
+        </main>
+      </div>
     </RouterContext.Provider>
   );
 };
 
-export const useRouterContext = () => useContext(RouterContext);
+export { RouterContext, RouterProvider };

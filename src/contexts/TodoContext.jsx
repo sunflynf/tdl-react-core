@@ -1,17 +1,15 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from 'react';
 
 const TodoContext = createContext();
 
-export const useTodoContext = () => useContext(TodoContext);
-
-export const TodoProvider = ({ children }) => {
+const TodoProvider = ({ children }) => {
   const [todos, setTodos] = useState(() => {
-    const savedTodos = localStorage.getItem("todos");
+    const savedTodos = localStorage.getItem('todos');
     return savedTodos ? JSON.parse(savedTodos) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
   const addTodo = (todo) => {
@@ -29,9 +27,9 @@ export const TodoProvider = ({ children }) => {
       if (todo.id === id) {
         // Update dateFinish only if status changes to "Done"
         const dateFinish =
-          updatedTodo.status === "Done" && todo.status !== "Done"
+          updatedTodo.status === 'Done' && todo.status !== 'Done'
             ? new Date().toISOString()
-            : updatedTodo.status !== "Done"
+            : updatedTodo.status !== 'Done'
             ? null
             : todo.dateFinish;
 
@@ -54,7 +52,7 @@ export const TodoProvider = ({ children }) => {
   const changeStatus = (id, status) => {
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
-        const dateFinish = status === "Done" ? new Date().toISOString() : null;
+        const dateFinish = status === 'Done' ? new Date().toISOString() : null;
         return {
           ...todo,
           status,
@@ -80,3 +78,5 @@ export const TodoProvider = ({ children }) => {
     </TodoContext.Provider>
   );
 };
+
+export { TodoContext, TodoProvider };
