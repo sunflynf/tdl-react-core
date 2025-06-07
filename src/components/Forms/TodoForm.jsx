@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { useTodoContext } from "../contexts/TodoContext";
-import "./TodoForm.css";
+import { use, useState } from 'react';
+import { TodoContext } from '../../contexts/TodoContext';
+import './TodoForm.css';
 
-function TodoForm({ todo, onClose, onSave, mode = "add" }) {
-  const { addTodo, updateTodo } = useTodoContext();
+function TodoForm({ todo, onClose, onSave, mode = 'add' }) {
+  const { addTodo, updateTodo } = use(TodoContext);
   const [formData, setFormData] = useState({
-    title: todo?.title || "",
-    description: todo?.description || "",
-    dateEnd: todo?.dateEnd ? todo.dateEnd.split("T")[0] : "",
-    status: todo?.status || "To do",
+    title: todo?.title || '',
+    description: todo?.description || '',
+    dateEnd: todo?.dateEnd ? todo.dateEnd.split('T')[0] : '',
+    status: todo?.status || 'To do',
   });
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,12 +26,10 @@ function TodoForm({ todo, onClose, onSave, mode = "add" }) {
 
     const todoData = {
       ...formData,
-      dateEnd: formData.dateEnd
-        ? new Date(formData.dateEnd).toISOString()
-        : null,
+      dateEnd: formData.dateEnd ? new Date(formData.dateEnd).toISOString() : null,
     };
 
-    if (mode === "add") {
+    if (mode === 'add') {
       addTodo(todoData);
     } else {
       updateTodo(todo.id, todoData);
@@ -44,7 +42,7 @@ function TodoForm({ todo, onClose, onSave, mode = "add" }) {
     <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
-          <h2>{mode === "add" ? "Add New Todo" : "Edit Todo"}</h2>
+          <h2>{mode === 'add' ? 'Add New Todo' : 'Edit Todo'}</h2>
           <button className="close-button" onClick={onClose}>
             &times;
           </button>
@@ -53,14 +51,7 @@ function TodoForm({ todo, onClose, onSave, mode = "add" }) {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="title">Title</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-            />
+            <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
           </div>
 
           <div className="form-group">
@@ -90,12 +81,7 @@ function TodoForm({ todo, onClose, onSave, mode = "add" }) {
 
           <div className="form-group">
             <label htmlFor="status">Status</label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
+            <select id="status" name="status" value={formData.status} onChange={handleChange}>
               <option value="To do">To do</option>
               <option value="Doing">Doing</option>
               <option value="Done">Done</option>
@@ -107,7 +93,7 @@ function TodoForm({ todo, onClose, onSave, mode = "add" }) {
               Cancel
             </button>
             <button type="submit" className="save-button">
-              {mode === "add" ? "Add Todo" : "Save Changes"}
+              {mode === 'add' ? 'Add Todo' : 'Save Changes'}
             </button>
           </div>
         </form>
