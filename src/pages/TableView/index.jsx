@@ -1,7 +1,9 @@
 import { use, useState } from 'react';
 import { TodoContext } from '../../contexts/TodoContext';
 import ConfirmDialog from '../../components/Dialogs/ConfirmDialog';
-import { formatDateForTable as formatDate } from '../../utils/format';
+
+import { TodoEditRow } from './TodoEditRow';
+import { TodoRow } from './TodoRow';
 import './TableView.css';
 
 function TableView() {
@@ -10,48 +12,6 @@ function TableView() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState(null);
   const [editingTodo, setEditingTodo] = useState(null);
-  const [newTodo, setNewTodo] = useState({
-    title: '',
-    description: '',
-    dateEnd: '',
-    status: 'To do',
-  });
-
-  const today = new Date().toISOString().split('T')[0];
-
-  const handleInputChange = (e, id = null) => {
-    const { name, value } = e.target;
-
-    if (id) {
-      // Editing existing todo
-      setEditingTodo({
-        ...editingTodo,
-        [name]: value,
-      });
-    } else {
-      // Adding new todo
-      setNewTodo({
-        ...newTodo,
-        [name]: value,
-      });
-    }
-  };
-
-  const handleAddSave = () => {
-    addTodo(newTodo);
-    setNewTodo({
-      title: '',
-      description: '',
-      dateEnd: '',
-      status: 'To do',
-    });
-    setIsAddingTodo(false);
-  };
-
-  const handleEditSave = () => {
-    updateTodo(editingTodo.id, editingTodo);
-    setEditingTodo(null);
-  };
 
   const startEdit = (todo) => {
     setEditingTodo({ ...todo });
@@ -77,6 +37,13 @@ function TableView() {
       <h2>Todo Table</h2>
 
       <table className="todo-table">
+        <colgroup>
+          <col style={{ width: '20%' }} />
+          <col style={{ width: '32%' }} />
+          <col style={{ width: '18%' }} />
+          <col style={{ width: '15%' }} />
+          <col style={{ width: '15%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>Title</th>
@@ -88,112 +55,47 @@ function TableView() {
         </thead>
         <tbody>
           {todos.map((todo) => (
-            <tr key={todo.id} className={`status-${todo.status.toLowerCase().replace(' ', '-')}`}>
+            <>
               {editingTodo && editingTodo.id === todo.id ? (
-                <>
-                  <td>
-                    <input
-                      type="text"
-                      name="title"
-                      value={editingTodo.title}
-                      onChange={(e) => handleInputChange(e, todo.id)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="description"
-                      value={editingTodo.description}
-                      onChange={(e) => handleInputChange(e, todo.id)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="date"
-                      name="dateEnd"
-                      value={formatDate(editingTodo.dateEnd)}
-                      onChange={(e) => handleInputChange(e, todo.id)}
-                      min={today}
-                    />
-                  </td>
-                  <td>
-                    <select name="status" value={editingTodo.status} onChange={(e) => handleInputChange(e, todo.id)}>
-                      <option value="To do">To do</option>
-                      <option value="Doing">Doing</option>
-                      <option value="Done">Done</option>
-                    </select>
-                  </td>
-                  <td className="action-cell">
-                    <button className="save-button" onClick={handleEditSave}>
-                      Save
-                    </button>
-                    <button className="cancel-button" onClick={cancelEdit}>
-                      Cancel
-                    </button>
-                  </td>
-                </>
+                <TodoEditRow
+                  key={todo.id}
+                  todo={editingTodo}
+                  onSave={(updated) => {
+                    updateTodo(editingTodo.id, updated);
+                    setEditingTodo(null);
+                  }}
+                  onCancel={cancelEdit}
+                />
               ) : (
-                <>
-                  <td>{todo.title}</td>
-                  <td className="description-cell">{todo.description}</td>
-                  <td>{todo.dateEnd ? new Date(todo.dateEnd).toLocaleDateString() : 'N/A'}</td>
-                  <td>{todo.status}</td>
-                  <td className="action-cell">
-                    <button className="edit-button" onClick={() => startEdit(todo)}>
-                      Edit
-                    </button>
-                    <button className="delete-button" onClick={() => handleDelete(todo)}>
-                      Delete
-                    </button>
-                  </td>
-                </>
+                <TodoRow
+                  key={todo.id}
+                  todo={todo}
+                  onEdit={isAddingTodo ? undefined : startEdit} // Block edit if adding
+                  onDelete={isAddingTodo ? undefined : handleDelete}
+                />
               )}
-            </tr>
+            </>
           ))}
-          {isAddingTodo && (
-            <tr className="new-todo-row">
-              <td>
-                <input
-                  type="text"
-                  name="title"
-                  value={newTodo.title}
-                  onChange={handleInputChange}
-                  placeholder="Title"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  name="description"
-                  value={newTodo.description}
-                  onChange={handleInputChange}
-                  placeholder="Description"
-                />
-              </td>
-              <td>
-                <input type="date" name="dateEnd" value={newTodo.dateEnd} onChange={handleInputChange} />
-              </td>
-              <td>
-                <select name="status" value={newTodo.status} onChange={handleInputChange}>
-                  <option value="To do">To do</option>
-                  <option value="Doing">Doing</option>
-                  <option value="Done">Done</option>
-                </select>
-              </td>
-              <td className="action-cell">
-                <button className="save-button" onClick={handleAddSave}>
-                  Save
-                </button>
-                <button className="cancel-button" onClick={() => setIsAddingTodo(false)}>
-                  Cancel
-                </button>
-              </td>
-            </tr>
+          {isAddingTodo && !editingTodo && (
+            <TodoEditRow
+              todo={{
+                title: '',
+                description: '',
+                dateEnd: '',
+                status: 'To do',
+              }}
+              onSave={(newTodo) => {
+                addTodo(newTodo);
+                setIsAddingTodo(false);
+              }}
+              onCancel={() => setIsAddingTodo(false)}
+              mode="add"
+            />
           )}
         </tbody>
       </table>
 
-      {!isAddingTodo && (
+      {!isAddingTodo && !editingTodo && (
         <button className="add-button" onClick={() => setIsAddingTodo(true)}>
           Add Todo
         </button>

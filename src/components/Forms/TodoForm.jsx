@@ -1,32 +1,35 @@
-import { use, useState } from 'react';
+import { use } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import clsx from 'clsx';
 import { TodoContext } from '../../contexts/TodoContext';
 import './TodoForm.css';
 
 function TodoForm({ todo, onClose, onSave, mode = 'add' }) {
   const { addTodo, updateTodo } = use(TodoContext);
-  const [formData, setFormData] = useState({
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const initialValues = {
     title: todo?.title || '',
     description: todo?.description || '',
     dateEnd: todo?.dateEnd ? todo.dateEnd.split('T')[0] : '',
     status: todo?.status || 'To do',
-  });
-
-  const today = new Date().toISOString().split('T')[0];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const validationSchema = Yup.object({
+    title: Yup.string().required('Title is required').min(5, 'Title must be at least 5 characters'),
+    description: Yup.string(),
+    dateEnd: Yup.string()
+      .required('Due date is required')
+      .test('is-today-or-later', 'Due date cannot be in the past', (value) => !value || value >= today),
+    status: Yup.string().oneOf(['To do', 'Doing', 'Done']),
+  });
 
+  const handleSubmit = (values) => {
     const todoData = {
-      ...formData,
-      dateEnd: formData.dateEnd ? new Date(formData.dateEnd).toISOString() : null,
+      ...values,
+      dateEnd: values.dateEnd ? new Date(values.dateEnd).toISOString() : null,
     };
 
     if (mode === 'add') {
@@ -48,55 +51,65 @@ function TodoForm({ todo, onClose, onSave, mode = 'add' }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="title">Title</label>
-            <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
-          </div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          validateOnBlur={false}
+          validateOnChange={false}
+        >
+          {({ isSubmitting, errors, touched, submitCount }) => (
+            <Form>
+              <div className={clsx('form-group', errors.title && (touched.title || submitCount > 0) && 'has-error')}>
+                <label htmlFor="title">Title</label>
+                <Field type="text" id="title" name="title" className="form-input" autoFocus />
+                {errors.title && (touched.title || submitCount > 0) && <div className="error">{errors.title}</div>}
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="3"
-              cols="40"
-            />
-          </div>
+              <div
+                className={clsx(
+                  'form-group',
+                  errors.description && (touched.description || submitCount > 0) && 'has-error'
+                )}
+              >
+                <label htmlFor="description">Description</label>
+                <Field as="textarea" id="description" name="description" rows="3" cols="40" className="form-input" />
+                {errors.description && (touched.description || submitCount > 0) && (
+                  <div className="error">{errors.description}</div>
+                )}
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="dateEnd">Due Date</label>
-            <input
-              type="date"
-              id="dateEnd"
-              name="dateEnd"
-              value={formData.dateEnd}
-              onChange={handleChange}
-              min={today}
-              required
-            />
-          </div>
+              <div
+                className={clsx('form-group', errors.dateEnd && (touched.dateEnd || submitCount > 0) && 'has-error')}
+              >
+                <label htmlFor="dateEnd">Due Date</label>
+                <Field type="date" id="dateEnd" name="dateEnd" className="form-input" />
+                {errors.dateEnd && (touched.dateEnd || submitCount > 0) && (
+                  <div className="error">{errors.dateEnd}</div>
+                )}
+              </div>
 
-          <div className="form-group">
-            <label htmlFor="status">Status</label>
-            <select id="status" name="status" value={formData.status} onChange={handleChange}>
-              <option value="To do">To do</option>
-              <option value="Doing">Doing</option>
-              <option value="Done">Done</option>
-            </select>
-          </div>
+              <div className={clsx('form-group', errors.status && (touched.status || submitCount > 0) && 'has-error')}>
+                <label htmlFor="status">Status</label>
+                <Field as="select" id="status" name="status" className="form-input">
+                  <option value="To do">To do</option>
+                  <option value="Doing">Doing</option>
+                  <option value="Done">Done</option>
+                </Field>
+                {errors.status && (touched.status || submitCount > 0) && <div className="error">{errors.status}</div>}
+              </div>
 
-          <div className="form-actions">
-            <button type="button" className="cancel-button" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="save-button">
-              {mode === 'add' ? 'Add Todo' : 'Save Changes'}
-            </button>
-          </div>
-        </form>
+              <div className="form-actions">
+                <button type="button" className="cancel-button" onClick={onClose}>
+                  Cancel
+                </button>
+                <button type="submit" className="save-button" disabled={isSubmitting}>
+                  {mode === 'add' ? 'Add Todo' : 'Save Changes'}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

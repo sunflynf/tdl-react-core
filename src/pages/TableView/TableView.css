@@ -45,10 +45,8 @@
   border-left: 4px solid var(--done-color);
 }
 
-.action-cell {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+.action-cell button:first-child {
+  margin-right: 10px;
 }
 
 .description-cell {
@@ -56,4 +54,31 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.form-input {
+  padding: 8px 10px;
+  border: 1.5px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1976d2;
+  background: #f0f7ff;
+}
+
+.has-error.form-input {
+  border-color: #e74c3c;
+  background: #fff6f6;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.95em;
+  margin-top: 4px;
+  margin-left: 2px;
 }
